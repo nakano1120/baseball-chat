@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>socket.io chat</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <style>
+    html,body{
+        height:100%;
+    }
+    #wrap{
+        width: 100%;
+        position: relative;
+        height:auto !important; /*IE6対策*/
+        height: 100%; /*IE6対策*/
+        min-height: 100%;
+    }
+    #contents{
+        padding-bottom:140px; /*フッターの高さと同じ*/
+    }
+    #footer{
+        height:140px;
+        width:100%;
+        position:absolute;
+        bottom:0;
+        background-color:azure;
+    }
+    
+    </style>
+</head>
+<body>
+    <ul style="list-style-type: none;" id="messages"></ul>
+    <div id="footer">
+    <span id="kaikai"></span><br><span id="teama">チームA</span>　<span id="ap">0</span>　-　<span id="bp">0</span>　<span id="teamb">チームB</span>
+    <form id="message_form" action="#">
+      name:<input id="input_name" autocomplete="off" />chat:<input id="input_msg" autocomplete="off" /><button>Send</button>
+    </form>
+    <h1>やきうトーク！</h1>
+  </div>
+  <script>
+      var socketio = io();
+      var siai=0
+      var team1=["田 DEN","田中","吉田","太田","島田","多田","飯田","田崎","田浦","井田","井田"]
+      var team2=["マウンテンズ","山田","山本","大山","山川","山中","山城","山内","山形","富山","富山"]
+      var kai=1
+      var ou="表"
+      var out=0
+      var strike=0
+      var ball=0
+      var point1=0
+      var point2=0
+      $(function(){
+          $('#message_form').submit(function(){
+            socketio.emit('message', ($('#input_name').val() +":"+ $('#input_msg').val()));
+            $('#input_msg').val('');
+            return false;
+          });
+          socketio.on('message',function(msg){
+            $('#messages').append($('<li>').text(msg));
+          });
+          socketio.on('messageb',function(msg){
+            $('#messages').append($('<li style="color:blue;">').text(msg));
+          });
+          socketio.on('teammei',function(msg){
+            var mei=msg.split(',');
+            $('#input_msg').val(mei[0]);
+            $('#input_msg').val(mei[1]);
+          });
+        });
+    </script>
+</body>
+</html>
